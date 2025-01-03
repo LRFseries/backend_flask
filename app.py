@@ -21,7 +21,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 memory = deque(maxlen=15)
 
-# Define your Python functions
+# Read the API key from the environment variables
 load_dotenv('api_key.env')
 os.environ["GROQ_API_KEY"] = os.getenv('groq_api_key')
 
@@ -105,6 +105,9 @@ import nltk
 
 def getProfessor(expression):
     """Fetch information from a certain professor at Texas Tech"""
+    print("Running get professor tool with expression:", expression)
+    if(expression == None):
+        return json.dumps({"error": "Invalid expression, please try again, or try different wording"})
     school = rmp.get_school_by_name("Texas Tech University")
 
     professors = rmp.get_professors_by_school_and_name(school, f"{expression}")
@@ -192,7 +195,7 @@ allDepartments ={
   37: 'Marketing',
   38: 'Mathematics',
   1396: 'Mathematics and Statistics',
-  39: 'Medicince',
+  39: 'Medicine',
   134: 'Microbiology',
   1244: 'Modern and Classical Lang and Lit.',
   40: 'Music',
@@ -218,6 +221,8 @@ allDepartments ={
 def searchDepartment(expression):
 
     print("Running search department tool with expression:", expression)
+    if(expression == None):
+        return json.dumps({"error": "Invalid expression, please try again, or try different wording"})
     most_similar_department = allDepartments[1]
     most_similar_distance = nltk.edit_distance(most_similar_department, expression)
 
@@ -236,7 +241,7 @@ def searchDepartment(expression):
 
     url = f'https://www.ratemyprofessors.com/search/professors/1011?q=*&did={departmentID}'
     # Specify the path to the ChromeDriver executable
-    driver_path = r'C:\Users\lrfar\.cache\selenium\chromedriver\win64\131.0.6778.204\chromedriver.exe'  # Update this to the correct path
+    driver_path = os.getenv('chromedriver_path')  # Update this to the correct path
 
     # Initialize the ChromeDriver service
     service = Service(driver_path)
@@ -454,4 +459,4 @@ def runai():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
