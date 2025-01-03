@@ -23,7 +23,7 @@ memory = deque(maxlen=15)
 
 # Define your Python functions
 load_dotenv('api_key.env')
-os.environ["GROQ_API_KEY"] = groq_api_key
+os.environ["GROQ_API_KEY"] = os.getenv('groq_api_key')
 
 
 def get_professor_id(name):
